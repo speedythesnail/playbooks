@@ -1,0 +1,7 @@
+- name: Install ThinkPad-specific packages
+  ansible.builtin.package:
+    name:
+      - tlp
+      - tlp-rdw
+    state: present
+  become: true

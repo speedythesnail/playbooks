@@ -1,0 +1,21 @@
+---
+- name: Install Java development packages on RHEL-based systems
+  ansible.builtin.dnf:
+    name:
+      - java-{{ openjdk_version }}-openjdk
+      - java-{{ openjdk_version }}-openjdk-javadoc
+      - java-{{ openjdk_version }}-openjdk-jmods
+      - java-{{ openjdk_version }}-openjdk-devel
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Java development packages on Debian-based systems
+  ansible.builtin.apt:
+    name:
+      - openjdk-{{ openjdk_version }}-jdk
+      - openjdk-{{ openjdk_version }}-jre
+      - openjdk-{{ openjdk_version }}-source
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"

@@ -1,0 +1,49 @@
+- name: Enable CodeReady Builder repository (RedHat Systems)
+  community.general.rhsm_repository:
+    name: codeready-builder-for-rhel-9-{{ ansible_architecture }}-rpms
+    state: enabled
+  become: true
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "9"
+
+- name: Install EPEL repository using dnf  (RedHat Systems)
+  ansible.builtin.dnf:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+    state: present
+  become: true
+  when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "9"
+
+- name: Add 1Password repository (RedHat Systems)
+  ansible.builtin.yum_repository:
+    name: 1password
+    description: '1Password Stable Channel'
+    baseurl: https://downloads.1password.com/linux/rpm/stable/$basearch
+    enabled: true
+    gpgcheck: true
+    gpgkey: https://downloads.1password.com/linux/keys/1password.asc
+    file: 1password
+  become: true
+  when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
+
+- name: Add 1Password repository (Debian-Systems)
+  ansible.builtin.apt_repository:
+    repo: deb [arch=amd64] https://downloads.1password.com/linux/debian stable main
+    state: present
+    filename: 1password
+  become: true
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: Add 1Password GPG key (Debian-Systems)
+  ansible.builtin.apt_key:
+    url: https://downloads.1password.com/linux/keys/1password.asc
+    state: present
+  become: true
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
+- name: Install RHEL packages
+  ansible.builtin.package:
+    name:
+      - 1password
+      - ansible
+      - vim
+    state: present
+  become: true

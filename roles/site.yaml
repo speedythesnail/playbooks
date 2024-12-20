@@ -1,0 +1,9 @@
+---
+- hosts: localhost  
+  roles:
+    - common
+    - { role: thinkpad, when: "'ThinkPad' in ansible_product_version" }
+    - development-core
+    - development-java
+    - development-python
+    - development-typescript
