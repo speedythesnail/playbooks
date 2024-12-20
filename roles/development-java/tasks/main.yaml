@@ -19,3 +19,10 @@
     state: present
   become: true
   when: ansible_os_family == "Debian"
+
+- name: Set current java version in alternatives
+  ansible.builtin.alternatives:
+    name: java
+    path: /usr/lib/jvm/java-{{ openjdk_version }}-openjdk/bin/java
+    link: /usr/bin/java
+  become: true
