@@ -39,11 +39,12 @@
   become: true
   when: ansible_distribution in ["Debian", "Ubuntu"]
 
-- name: Install RHEL packages
+- name: Install packages
   ansible.builtin.package:
     name:
       - 1password
       - ansible
+      - kitty
       - vim
     state: present
   become: true
