@@ -1,5 +1,15 @@
 ---
-- hosts: localhost  
+- hosts: localhost
+  become: yes
+  vars_prompt:
+    - name: git_username
+      prompt: 'Enter your Git username'
+      private: no
+
+    - name: git_email
+      prompt: 'Enter your Git email'
+      private: no
+
   roles:
     - common
     - { role: thinkpad, when: "'ThinkPad' in ansible_product_version" }
