@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# .bash_profile
+
+# Function to add a directory to PATH if it's not already included
+pathmunge() {
+	if ! echo "$PATH" | /bin/grep -qE "(^|:)$1($|:)"; then
+		if [ "$2" = "after" ]; then
+			PATH="$PATH:$1"
+		else
+			PATH="$1:$PATH"
+		fi
+	fi
+	export PATH
+}
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	# shellcheck disable=SC1090
+	. ~/.bashrc
+fi
+
+# User specific environment and startup programs
+if [ -d "/etc/alternatives/java_sdk" ]; then
+	export JAVA_HOME="/etc/alternatives/java_sdk"
+fi

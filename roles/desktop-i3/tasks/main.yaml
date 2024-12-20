@@ -1,0 +1,46 @@
+- name: Calculate max_threshhold for i3status config load
+  set_fact:
+    load_max_threshold: '{{ (0.85 * ansible_processor_cores) | round(2) }}'
+
+- name: Install i3 Window Manager and relevant packages
+  ansible.builtin.package:
+    name:
+      - dmenu
+      - i3
+      - i3lock
+      - i3status
+      - thunar
+    state: present
+  become: true
+
+- name: Ensure i3 config dir exist
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.config/i3'
+    state: directory
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+    mode: '0755'
+
+- name: Ensure i3status config dir exist
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.config/i3status'
+    state: directory
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+    mode: '0755'
+
+- name: Copy i3 config
+  ansible.builtin.copy:
+    src: 'files/i3.config'
+    dest: '{{ ansible_env.HOME }}/.config/i3/config'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+    mode: '0644'
+
+- name: Generate i3status config and store to ~/.config/i3status/config
+  ansible.builtin.template:
+    src: 'templates/i3status.config.j2'
+    dest: '{{ ansible_env.HOME }}/.config/i3status/config'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+    mode: '0644'

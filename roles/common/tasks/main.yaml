@@ -44,7 +44,41 @@
     name:
       - 1password
       - ansible
+      - firefox
       - kitty
+      - unzip
       - vim
     state: present
   become: true
+
+- name: Set Timezone to America/New_York
+  community.general.timezone:
+    name: America/New_York
+  become: true
+
+- name: Ensure directories in home exists
+  ansible.builtin.file:
+    path: '{{ item }}'
+    state: directory
+    mode: '0755'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+  become: false
+  with_items:
+    - '{{ ansible_env.HOME }}'
+    - '{{ ansible_env.HOME }}/.config'
+    - '{{ ansible_env.HOME }}/.local'
+    - '{{ ansible_env.HOME }}/.local/bin'
+
+- name: Copy files to home dir
+  ansible.builtin.copy:
+    src: 'files/{{ item.name }}'
+    dest: '{{ ansible_env.HOME }}/{{ item.dest }}'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+    mode: '{{ item.mode }}'
+  with_items:
+    - { name: 'vimrc', dest: '.vimrc', mode: '0700' }
+    - { name: 'bash_aliases', dest: '.bash_aliases', mode: '0600' }
+    - { name: 'bash_profile', dest: '.bash_profile', mode: '0600' }
+    - { name: 'bashrc', dest: '.bashrc', mode: '0600' }

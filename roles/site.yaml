@@ -1,6 +1,5 @@
 ---
 - hosts: localhost
-  become: yes
   vars_prompt:
     - name: git_username
       prompt: 'Enter your Git username'
@@ -17,3 +16,4 @@
     - development-java
     - development-python
     - development-typescript
+    - desktop-i3

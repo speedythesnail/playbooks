@@ -34,4 +34,4 @@ else
 fi
 # Run Ansible playbook
 echo "Running Ansible playbook..."
-ansible-playbook roles/site.yaml --ask-become-pass
+ansible-playbook -i inventory/hosts.yaml roles/site.yaml --ask-become-pass

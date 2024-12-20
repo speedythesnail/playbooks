@@ -1,0 +1,195 @@
+#!/usr/bin/env bash
+# .bashrc
+# This prevents a non-interactive ssh session from sourcing the bashrc file
+# If not running interactively, don't do anything
+case $- in
+	*i*) ;;
+	*) return ;;
+esac
+
+# Source global definitions
+#if [ -f /etc/bashrc ]; then
+#     . /etc/bashrc
+#fi
+
+# Function to add a directory to PATH if it's not already included
+pathmunge() {
+	if ! echo "$PATH" | /bin/grep -qE "(^|:)$1($|:)"; then
+		if [ "$2" = "after" ]; then
+			PATH="$PATH:$1"
+		else
+			PATH="$1:$PATH"
+		fi
+	fi
+	export PATH
+}
+
+################################################################################
+# History
+################################################################################
+# don't put duplicate lines or lines starting with space in the history.
+# See bash(1) for more options
+HISTCONTROL=ignoreboth
+
+# append to the history file, don't overwrite it
+shopt -s histappend
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+################################################################################
+# Update Window Size
+################################################################################
+# check the window size after each command and, if necessary,
+# update the values of LINES and COLUMNS.
+shopt -s checkwinsize
+
+# If set, the pattern "**" used in a pathname expansion context will
+# match all files and zero or more directories and subdirectories.
+#shopt -s globstar
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
+################################################################################
+# Color Prompt and Promt Variable (PS1)
+################################################################################
+# set a fancy prompt (non-color, unless we know we "want" color)
+case "${TERM}" in
+	xterm-color | xterm-kitty | *-256color) color_prompt=yes ;;
+esac
+
+if [ -n "${force_color_prompt}" ]; then
+	if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+		# We have color support; assume it's compliant with Ecma-48
+		# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+		# a case would tend to support setf rather than setaf.)
+		color_prompt=yes
+	else
+		color_prompt=
+	fi
+fi
+
+################################################################################
+# Git Prompt Command
+################################################################################
+GREEN='\[\033[32m\]'
+WHITE='\[\033[37m\]'
+RED='\[\033[31m\]'
+BLUE='\[\033[34m\]'
+RESET='\[\033[00m\]'
+LIGHT_RED='\[\e[91m\]'
+
+if [ -f "${HOME}/.git-prompt.sh" ]; then
+	# shellcheck disable=SC1091
+	source "${HOME}/.git-prompt.sh"
+
+	export GIT_PS1_SHOWUNTRACKEDFILES=1
+	export GIT_PS1_SHOWDIRTYSTATE=1
+
+	if [ "$color_prompt" = yes ]; then
+		export GIT_PS1_SHOWCOLORHINTS=true
+		# Define the colors
+		# Set PROMPT_COMMAND to use __git_ps1 with colors
+		PROMPT_COMMAND='__git_ps1 "${GREEN}\u${WHITE}@${RED}\h${RESET}:${BLUE}\w${RESET}${LIGHT_RED}" "${RESET}\\\$ "'
+	else
+		PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
+	fi
+else
+	if [ "$color_prompt" = yes ]; then
+		PS1="${GREEN}\u${WHITE}@${RED}\h${RESET}:${BLUE}\w${RESET}\$ "
+	else
+		PS1='\u@\h:\w\$ '
+	fi
+fi
+
+unset color_prompt force_color_prompt
+
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+	xterm* | rxvt*)
+		PS1="\[\e]0;\u@\h: \w\a\]${PS1}"
+		;;
+	*) ;;
+esac
+
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+	if test -r ~/.dircolors; then
+		eval "$(dircolors -b ~/.dircolors)"
+	else
+		eval "$(dircolors -b)"
+	fi
+
+	alias ls='ls --color=auto'
+	#alias dir='dir --color=auto'
+	#alias vdir='vdir --color=auto'
+	alias grep='grep --color=auto'
+	alias fgrep='fgrep --color=auto'
+	alias egrep='egrep --color=auto'
+fi
+
+# colored GCC warnings and errors
+#export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+################################################################################
+# Aliases
+################################################################################
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+# User specific aliases and functions
+if [ -f "${HOME}/.bash_aliases" ]; then
+	# shellcheck disable=SC1091
+	source "${HOME}/.bash_aliases"
+fi
+
+################################################################################
+# Bash Completion
+################################################################################
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+	if [ -f /usr/share/bash-completion/bash_completion ]; then
+		# shellcheck disable=SC1091
+		source /usr/share/bash-completion/bash_completion
+	elif [ -f /etc/bash_completion ]; then
+		# shellcheck disable=SC1091
+		source /etc/bash_completion
+	fi
+fi
+
+################################################################################
+# Bash Secrets (If Exists)
+################################################################################
+if [ -f "${HOME}/.bash_secrets" ]; then
+	# shellcheck disable=SC1091
+	source "${HOME}/.bash_secrets"
+fi
+
+################################################################################
+# Exports
+################################################################################
+# Uncomment the following line if you don't like systemctl's auto-paging feature:
+# export SYSTEMD_PAGER=
+# Make sure GPG knows what TTY we are using
+# shellcheck disable=SC2155
+export GPG_TTY="$(tty)"
+
+# Fixes the following message with git: Pseudo-terminal will not be allocated because stdin is not a terminal.
+export GIT_SSH_COMMAND="ssh -T"
+
+# Ensure the SSH agent is started and the SSH_* environment variables are exported
+eval "$(ssh-agent -s)" >/dev/null 2>&1
+
+pathmunge "${HOME}/bin"
+pathmunge "${HOME}/.local/bin"
+
+export NVM_DIR="$HOME/.nvm"
+# shellcheck disable=SC1091
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# shellcheck disable=SC1091
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion

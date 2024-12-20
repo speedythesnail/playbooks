@@ -1,0 +1,35 @@
+" Source default vim settings
+source $VIMRUNTIME/defaults.vim
+
+" Set the number of spaces that a <Tab> in the file counts for
+set tabstop=2
+
+" Set the number of spaces to use for each step of (auto)indent
+set shiftwidth=2
+
+" Use spaces instead of tabs
+set expandtab
+
+" Display line numbers
+set number
+
+" Display the cursor position at all times
+set ruler
+
+" Highlight all search matches
+set hlsearch
+
+" Enable syntax highlighting
+syntax enable
+
+" Keep the cursor in the middle of the screen
+set scrolloff=999
+
+" Enable file type detection, load file type plugins and indent settings
+filetype plugin indent on
+
+" For shell script files, do not expand tabs to spaces
+autocmd FileType sh setlocal noexpandtab
+
+" Disable line wrapping
+set nowrap
