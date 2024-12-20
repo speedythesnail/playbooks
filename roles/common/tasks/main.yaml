@@ -46,6 +46,7 @@
       - ansible
       - firefox
       - kitty
+      - thunderbird
       - unzip
       - vim
     state: present
