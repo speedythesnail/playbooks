@@ -26,8 +26,6 @@
 - name: Install Development packages
   ansible.builtin.package:
     name:
-      - ansible
-      - ansible-lint
       - code
       - git
       - jq

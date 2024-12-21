@@ -1,13 +1,14 @@
 ---
-- hosts: localhost
+- name: Configure home workstation
+  hosts: localhost
   vars_prompt:
     - name: git_username
       prompt: 'Enter your Git username'
-      private: no
+      private: false
 
     - name: git_email
       prompt: 'Enter your Git email'
-      private: no
+      private: false
 
   roles:
     - common
@@ -16,4 +17,5 @@
     - development-java
     - development-python
     - development-typescript
+    - development-kubernetes
     - desktop-i3

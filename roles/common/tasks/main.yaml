@@ -1,3 +1,14 @@
+- name: Apt pre-requisites (Debian Systems)
+  ansible.builtin.package:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+  become: true
+  when: ansible_distribution in ["Debian", "Ubuntu"]
+
 - name: Enable CodeReady Builder repository (RedHat Systems)
   community.general.rhsm_repository:
     name: codeready-builder-for-rhel-9-{{ ansible_architecture }}-rpms
@@ -43,7 +54,6 @@
   ansible.builtin.package:
     name:
       - 1password
-      - ansible
       - firefox
       - kitty
       - thunderbird
