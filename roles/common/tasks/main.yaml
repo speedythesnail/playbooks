@@ -83,3 +83,13 @@
     - { name: 'bash_aliases', dest: '.bash_aliases', mode: '0600' }
     - { name: 'bash_profile', dest: '.bash_profile', mode: '0600' }
     - { name: 'bashrc', dest: '.bashrc', mode: '0600' }
+
+- name: Install ShellTech.net CA cert
+  ansible.builtin.copy:
+    src: 'files/shelltech-ca.crt'
+    dest: /etc/pki/ca-trust/source/anchors/shelltech-ca.crt
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  become: true
+  notify: update trusted ca cert
