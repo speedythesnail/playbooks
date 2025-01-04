@@ -11,20 +11,26 @@
   become: true
   when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
 
-- name: Add kubernetes repository (Debian-Systems)
-  ansible.builtin.apt_repository:
-    repo: deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /
-    state: present
-    filename: kubernetes
-  become: true
-  when: ansible_distribution in ["Debian", "Ubuntu"]
 
-- name: Add kubernetes GPG key (Debian-Systems)
-  ansible.builtin.apt_key:
-    url: https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key
+- name: Add kubernetes repository (Debian-Systems)
+  ansible.builtin.deb822_repository:
+    name: kubernetes
+    types: deb
+    uris: "https://pkgs.k8s.io/core:/stable:/v1.32/deb/"
+    signed_by: "https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key"
+    suites: /
+    architectures: amd64
     state: present
+    enabled: yes
   become: true
-  when: ansible_distribution in ["Debian", "Ubuntu"]
+  when: ansible_os_family == "Debian"
+  register: k8s_repo
+
+- name: Refresh apt repo
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
+  when: k8s_repo is changed
 
 - name: Install packages
   ansible.builtin.package:

@@ -1,0 +1,323 @@
+- name: Set hotcorner layout
+  community.general.dconf:
+    key: /org/cinnamon/hotcorner-layout
+    value: "['expo:false:0', 'scale:true:0', 'scale:false:0', 'desktop:true:0']"
+    state: present
+
+- name: Set panel zone symbolic icon sizes
+  community.general.dconf:
+    key: /org/cinnamon/panel-zone-symbolic-icon-sizes
+    value: '[{"panelId": 1, "left": 28, "center": 28, "right": 16}]'
+    state: present
+
+- name: Enable panels
+  community.general.dconf:
+    key: /org/cinnamon/panels-enabled
+    value: "['1:0:top']"
+    state: present
+
+- name: Set panels height
+  community.general.dconf:
+    key: /org/cinnamon/panels-height
+    value: "['1:40']"
+    state: present
+
+- name: Set window effect speed
+  community.general.dconf:
+    key: /org/cinnamon/window-effect-speed
+    value: '1'
+    state: present
+
+- name: Set cinnamon session quit time delay
+  community.general.dconf:
+    key: /org/cinnamon/cinnamon-session/quit-time-delay
+    value: '60'
+    state: present
+
+- name: Set background picture options
+  community.general.dconf:
+    key: /org/cinnamon/desktop/background/picture-options
+    value: "'zoom'"
+    state: present
+
+- name: Set background picture
+  community.general.dconf:
+    key: /org/cinnamon/desktop/background/picture-uri
+    value: "'file:///usr/share/backgrounds/linuxmint-wilma/aksenapati_snow_mountain.jpg'"
+    state: present
+
+- name: Set background slideshow delay
+  community.general.dconf:
+    key: /org/cinnamon/desktop/background/slideshow/delay
+    value: '15'
+    state: present
+
+- name: Set background slideshow image source
+  community.general.dconf:
+    key: /org/cinnamon/desktop/background/slideshow/image-source
+    value: "'xml:///usr/share/cinnamon-background-properties/linuxmint-wilma.xml'"
+    state: present
+
+- name: Show clock date
+  community.general.dconf:
+    key: /org/cinnamon/desktop/interface/clock-show-date
+    value: 'true'
+    state: present
+
+- name: Show clock seconds
+  community.general.dconf:
+    key: /org/cinnamon/desktop/interface/clock-show-seconds
+    value: 'true'
+    state: present
+
+- name: Set cursor size
+  community.general.dconf:
+    key: /org/cinnamon/desktop/interface/cursor-size
+    value: '24'
+    state: present
+
+- name: Set cursor theme
+  community.general.dconf:
+    key: /org/cinnamon/desktop/interface/cursor-theme
+    value: "'Bibata-Modern-Classic'"
+    state: present
+
+- name: Set GTK theme
+  community.general.dconf:
+    key: /org/cinnamon/desktop/interface/gtk-theme
+    value: "'Mint-L-Dark'"
+    state: present
+
+- name: Set icon theme
+  community.general.dconf:
+    key: /org/cinnamon/desktop/interface/icon-theme
+    value: "'Mint-Y-Sand'"
+    state: present
+
+- name: Set notification duration
+  community.general.dconf:
+    key: /org/cinnamon/desktop/notifications/notification-duration
+    value: '4'
+    state: present
+
+- name: Do not remove old notifications
+  community.general.dconf:
+    key: /org/cinnamon/desktop/notifications/remove-old
+    value: 'false'
+    state: present
+
+- name: Set mouse double-click speed
+  community.general.dconf:
+    key: /org/cinnamon/desktop/peripherals/mouse/double-click
+    value: '400'
+    state: present
+
+- name: Set mouse drag threshold
+  community.general.dconf:
+    key: /org/cinnamon/desktop/peripherals/mouse/drag-threshold
+    value: '8'
+    state: present
+
+- name: Set mouse speed
+  community.general.dconf:
+    key: /org/cinnamon/desktop/peripherals/mouse/speed
+    value: '0.0'
+    state: present
+
+- name: Set touchpad speed
+  community.general.dconf:
+    key: /org/cinnamon/desktop/peripherals/touchpad/speed
+    value: '0.0'
+    state: present
+
+- name: Allow keyboard shortcuts in screensaver
+  community.general.dconf:
+    key: /org/cinnamon/desktop/screensaver/allow-keyboard-shortcuts
+    value: 'true'
+    state: present
+
+- name: Do not allow media control in screensaver
+  community.general.dconf:
+    key: /org/cinnamon/desktop/screensaver/allow-media-control
+    value: 'false'
+    state: present
+
+- name: Disable floating widgets in screensaver
+  community.general.dconf:
+    key: /org/cinnamon/desktop/screensaver/floating-widgets
+    value: 'false'
+    state: present
+
+- name: Do not show album art in screensaver
+  community.general.dconf:
+    key: /org/cinnamon/desktop/screensaver/show-album-art
+    value: 'false'
+    state: present
+
+- name: Do not show info panel in screensaver
+  community.general.dconf:
+    key: /org/cinnamon/desktop/screensaver/show-info-panel
+    value: 'false'
+    state: present
+
+- name: Set launcher check frequency
+  community.general.dconf:
+    key: /org/cinnamon/launcher/check-frequency
+    value: '300'
+    state: present
+
+- name: Set launcher memory limit
+  community.general.dconf:
+    key: /org/cinnamon/launcher/memory-limit
+    value: '2048'
+    state: present
+
+- name: Enable workspace cycle in muffin
+  community.general.dconf:
+    key: /org/cinnamon/muffin/workspace-cycle
+    value: 'true'
+    state: present
+
+- name: Set idle dim time for power plugin
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/idle-dim-time
+    value: '600'
+    state: present
+
+- name: Set lid close action on AC power
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/lid-close-ac-action
+    value: "'suspend'"
+    state: present
+
+- name: Set lid close action on battery power
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/lid-close-battery-action
+    value: "'suspend'"
+    state: present
+
+- name: Set display sleep time on AC power
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/sleep-display-ac
+    value: '1800'
+    state: present
+
+- name: Set display sleep time on battery power
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/sleep-display-battery
+    value: '900'
+    state: present
+
+- name: Set inactive sleep timeout on AC power
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/sleep-inactive-ac-timeout
+    value: '10800'
+    state: present
+
+- name: Set inactive sleep timeout on battery power
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/power/sleep-inactive-battery-timeout
+    value: '3600'
+    state: present
+
+- name: Enable icons on buttons
+  community.general.dconf:
+    key: /org/cinnamon/settings-daemon/plugins/xsettings/buttons-have-icons
+    value: 'true'
+    state: present
+
+- name: Set theme name
+  community.general.dconf:
+    key: /org/cinnamon/theme/name
+    value: "'Mint-Y-Dark'"
+    state: present
+
+- name: Set GNOME clock format to 24h
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/clock-format
+    value: "'24h'"
+    state: present
+
+- name: Show GNOME clock date
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/clock-show-date
+    value: 'true'
+    state: present
+
+- name: Show GNOME clock seconds
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/clock-show-seconds
+    value: 'true'
+    state: present
+
+- name: Set GNOME GTK theme
+  community.general.dconf:
+    key: /org/gnome/desktop/interface/gtk-theme
+    value: "'Mint-L-Dark'"
+    state: present
+
+- name: Set color scheme to prefer dark
+  community.general.dconf:
+    key: /org/x/apps/portal/color-scheme
+    value: "'prefer-dark'"
+    state: present
+
+- name: Set GNOME Terminal Default Profile Background Color
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color
+    value: "'rgb(0,0,0)'"
+    state: present
+
+- name: Set GNOME Terminal Default Profile Transparency
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-transparency-percent
+    value: '8'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Size Columns
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/default-size-columns
+    value: '120'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Size Rows
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/default-size-rows
+    value: '30'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Font
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/font
+    value: "'Fira Code 14'"
+    state: present
+
+- name: Set GNOME Terminal Default Profile Use System Font
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-system-font
+    value: 'false'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Use System Theme Colors
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-colors
+    value: 'false'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Transparency
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-transparency
+    value: 'false'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Transparent Background
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-transparent-background
+    value: 'true'
+    state: present
+
+- name: Set GNOME Terminal Default Profile Name
+  community.general.dconf:
+    key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/visible-name
+    value: "'Default'"
+    state: present

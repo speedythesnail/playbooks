@@ -1,3 +1,11 @@
+- name: Linux Distribution
+  ansible.builtin.debug:
+    var: ansible_distribution
+
+- name: Distribution OS Family
+  ansible.builtin.debug:
+    var: ansible_os_family
+
 - name: Apt pre-requisites (Debian Systems)
   ansible.builtin.package:
     name:
@@ -7,7 +15,7 @@
       - gnupg
     state: present
   become: true
-  when: ansible_distribution in ["Debian", "Ubuntu"]
+  when: ansible_os_family == "Debian"
 
 - name: Enable CodeReady Builder repository (RedHat Systems)
   community.general.rhsm_repository:
@@ -35,20 +43,21 @@
   become: true
   when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
 
-- name: Add 1Password repository (Debian-Systems)
-  ansible.builtin.apt_repository:
-    repo: deb [arch=amd64] https://downloads.1password.com/linux/debian stable main
+# TODO: Create this 822 repo ONLY when there is no .list version of the repo, then create the repo using the builtin yum, then delete the 822 repo.....
+- name: Add 1Password Repository (Debian-Systems)
+  ansible.builtin.deb822_repository:
+    name: 1password
+    types: deb
+    uris: 'https://downloads.1password.com/linux/debian/amd64'
+    signed_by: 'https://downloads.1password.com/linux/keys/1password.asc'
+    suites: stable
+    components:
+      - main
+    architectures: amd64
     state: present
-    filename: 1password
+    enabled: true
   become: true
-  when: ansible_distribution in ["Debian", "Ubuntu"]
-
-- name: Add 1Password GPG key (Debian-Systems)
-  ansible.builtin.apt_key:
-    url: https://downloads.1password.com/linux/keys/1password.asc
-    state: present
-  become: true
-  when: ansible_distribution in ["Debian", "Ubuntu"]
+  when: ansible_os_family == "Debian"
 
 - name: Install packages
   ansible.builtin.package:
@@ -61,6 +70,22 @@
       - vim
     state: present
   become: true
+
+- name: Install Debian packages
+  ansible.builtin.package:
+    name:
+      - fonts-firacode
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install RedHat packages
+  ansible.builtin.package:
+    name:
+      - fira-code-fonts
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
 
 - name: Set Timezone to America/New_York
   community.general.timezone:
@@ -94,7 +119,7 @@
     - { name: 'bash_profile', dest: '.bash_profile', mode: '0600' }
     - { name: 'bashrc', dest: '.bashrc', mode: '0600' }
 
-- name: Install ShellTech.net CA cert
+- name: Install ShellTech.net CA cert (RedHat Systems)
   ansible.builtin.copy:
     src: 'files/shelltech-ca.crt'
     dest: /etc/pki/ca-trust/source/anchors/shelltech-ca.crt
@@ -102,4 +127,55 @@
     group: 'root'
     mode: '0644'
   become: true
-  notify: update trusted ca cert
+  notify: update trusted ca cert (RedHat)
+  when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
+
+- name: Install ShellTech.net CA cert (Debian Systems)
+  ansible.builtin.copy:
+    src: 'files/shelltech-ca.crt'
+    dest: /usr/local/share/ca-certificates/shelltech-ca.crt
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  become: true
+  notify: update trusted ca cert (Debian)
+  when: ansible_os_family == "Debian"
+
+- name: Check if .ssh directory exists
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.ssh'
+  register: ssh_dir
+
+- name: Set permissions for .ssh directory
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.ssh'
+    mode: '0700'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+  when: ssh_dir.stat.exists
+
+- name: Check if private key exists
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519'
+  register: private_key
+
+- name: Set permissions for private key
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519'
+    mode: '0600'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+  when: private_key.stat.exists
+
+- name: Check if public key exists
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519.pub'
+  register: public_key
+
+- name: Set permissions for public key
+  ansible.builtin.file:
+    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519.pub'
+    mode: '0644'
+    owner: '{{ ansible_env.USER }}'
+    group: '{{ ansible_env.USER }}'
+  when: public_key.stat.exists

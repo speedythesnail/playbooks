@@ -1,3 +1,7 @@
-- name: update trusted ca cert
+- name: update trusted ca cert (RedHat)
   ansible.builtin.command: update-ca-trust extract
+  become: true
+
+- name: update trusted ca cert (Debian)
+  ansible.builtin.command: update-ca-certificates
   become: true

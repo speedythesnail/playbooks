@@ -20,9 +20,18 @@
   become: true
   when: ansible_os_family == "Debian"
 
-- name: Set current java version in alternatives
+- name: Set current java version in alternatives on RHEL-based systems
   ansible.builtin.alternatives:
     name: java
     path: /usr/lib/jvm/java-{{ openjdk_version }}-openjdk/bin/java
     link: /usr/bin/java
   become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Set current java version in alternatives on Debian-based systems
+  ansible.builtin.alternatives:
+    name: java
+    path: /usr/lib/jvm/java-{{ openjdk_version }}-openjdk-amd64/bin/java
+    link: /usr/bin/java
+  become: true
+  when: ansible_os_family == "Debian"

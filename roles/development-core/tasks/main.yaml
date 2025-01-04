@@ -8,24 +8,25 @@
   become: true
   when: ansible_os_family == "RedHat"
 
-- name: Add VS Code repository (Debian-based systems)
-  ansible.builtin.apt_repository:
-    repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+- name: Add VS Code Repository (Debian-Systems)
+  ansible.builtin.deb822_repository:
+    name: vscode
+    types: deb
+    uris: 'https://packages.microsoft.com/repos/vscode'
+    signed_by: 'https://packages.microsoft.com/keys/microsoft.asc'
+    suites: stable
+    components:
+      - main
+    architectures: amd64
     state: present
-    filename: vscode
-  become: true
-  when: ansible_os_family == "Debian"
-
-- name: Add VS Code GPG key (Debian-based systems)
-  ansible.builtin.apt_key:
-    url: https://packages.microsoft.com/keys/microsoft.asc
-    state: present
+    enabled: true
   become: true
   when: ansible_os_family == "Debian"
 
 - name: Install Development packages
   ansible.builtin.package:
     name:
+      - ansible-lint
       - code
       - git
       - jq
@@ -35,14 +36,14 @@
   become: true
 
 - name: Set Git global username
-  ansible.builtin.git_config:
+  community.general.git_config:
     name: user.name
     value: '{{ git_username }}'
     scope: global
   when: git_username is defined and git_username | length > 0
 
 - name: Set Git global email
-  ansible.builtin.git_config:
+  community.general.git_config:
     name: user.email
     value: '{{ git_email }}'
     scope: global
