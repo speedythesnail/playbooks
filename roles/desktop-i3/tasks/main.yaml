@@ -1,5 +1,5 @@
 - name: Calculate max_threshhold for i3status config load
-  set_fact:
+  ansible.builtin.set_fact:
     load_max_threshold: '{{ (0.85 * ansible_processor_cores) | round(2) }}'
 
 - name: Install i3 Window Manager and relevant packages
