@@ -36,6 +36,13 @@
     state: present
   become: true
 
+- name: Install Development packages (Debian-Systems)
+  ansible.builtin.package:
+    name:
+      - build-essential
+    state: present
+  become: true
+
 - name: Set Git global username
   community.general.git_config:
     name: user.name

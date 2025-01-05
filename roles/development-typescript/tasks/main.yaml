@@ -1,0 +1,31 @@
+- name: Check if NVM is already installed
+  ansible.builtin.stat:
+    path: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+  register: nvm_installed
+
+- name: Install NVM
+  ansible.builtin.shell:
+    cmd: |
+      set -o pipefail # <-- adding this will prevent surprises
+      curl -o- "https://raw.githubusercontent.com/nvm-sh/nvm/{{ nvm_version }}/install.sh" | bash
+    executable: /bin/bash
+  args:
+    creates: '{{ ansible_env.HOME }}/.nvm/nvm.sh'
+  when: not nvm_installed.stat.exists
+  # register: nvm_install
+
+- name: Check NodeJS installed
+  ansible.builtin.shell:
+    cmd: source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm ls {{ node_version }} --no-colors
+    executable: /bin/bash
+  changed_when: false
+  ignore_errors: true
+  register: nodejs_check
+
+- name: Install NodeJS
+  ansible.builtin.shell:
+    cmd: source {{ ansible_env.HOME }}/.nvm/nvm.sh && nvm install {{ node_version }}
+    executable: /bin/bash
+  when: nodejs_check.rc != 0
+  register: node_install
+  changed_when: "node_install.rc != 0 and 'installed' in node_install.stdout"

@@ -16,7 +16,7 @@
     - development-core
     - development-java
     # - development-python
-    # - development-typescript
     - development-kubernetes
+    - development-typescript
     - { role: desktop-i3, when: "'RedHat' in ansible_os_family" }
     - { role: dconf-linux-mint, when: "'Linux Mint' in ansible_distribution" }
