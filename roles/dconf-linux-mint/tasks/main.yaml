@@ -1,9 +1,11 @@
+# Cinnamon Hotcorners Configuration
 - name: Set hotcorner layout
   community.general.dconf:
     key: /org/cinnamon/hotcorner-layout
     value: "['expo:false:0', 'scale:true:0', 'scale:false:0', 'desktop:true:0']"
     state: present
 
+# Cinnamon Panels Configuration
 - name: Set panel zone symbolic icon sizes
   community.general.dconf:
     key: /org/cinnamon/panel-zone-symbolic-icon-sizes
@@ -22,6 +24,7 @@
     value: "['1:40']"
     state: present
 
+# Cinnamon Window and Session Configuration
 - name: Set window effect speed
   community.general.dconf:
     key: /org/cinnamon/window-effect-speed
@@ -34,6 +37,7 @@
     value: '60'
     state: present
 
+# Cinnamon Background Configuration
 - name: Set background picture options
   community.general.dconf:
     key: /org/cinnamon/desktop/background/picture-options
@@ -58,6 +62,7 @@
     value: "'xml:///usr/share/cinnamon-background-properties/linuxmint-wilma.xml'"
     state: present
 
+# Cinnamon Desktop Interface Configuration
 - name: Show clock date
   community.general.dconf:
     key: /org/cinnamon/desktop/interface/clock-show-date
@@ -94,6 +99,7 @@
     value: "'Mint-Y-Sand'"
     state: present
 
+# Cinnamon Notifications Configuration
 - name: Set notification duration
   community.general.dconf:
     key: /org/cinnamon/desktop/notifications/notification-duration
@@ -106,6 +112,7 @@
     value: 'false'
     state: present
 
+# Cinnamon Mouse and Touchpad Configuration
 - name: Set mouse double-click speed
   community.general.dconf:
     key: /org/cinnamon/desktop/peripherals/mouse/double-click
@@ -130,6 +137,7 @@
     value: '0.0'
     state: present
 
+# Cinnamon Screensaver Configuration
 - name: Allow keyboard shortcuts in screensaver
   community.general.dconf:
     key: /org/cinnamon/desktop/screensaver/allow-keyboard-shortcuts
@@ -160,6 +168,7 @@
     value: 'false'
     state: present
 
+# Cinnamon Launcher Configuration
 - name: Set launcher check frequency
   community.general.dconf:
     key: /org/cinnamon/launcher/check-frequency
@@ -172,12 +181,14 @@
     value: '2048'
     state: present
 
+# Cinnamon Muffin Configuration
 - name: Enable workspace cycle in muffin
   community.general.dconf:
     key: /org/cinnamon/muffin/workspace-cycle
     value: 'true'
     state: present
 
+# Cinnamon Power Configuration
 - name: Set idle dim time for power plugin
   community.general.dconf:
     key: /org/cinnamon/settings-daemon/plugins/power/idle-dim-time
@@ -220,18 +231,21 @@
     value: '3600'
     state: present
 
+# Cinnamon XSettings Configuration
 - name: Enable icons on buttons
   community.general.dconf:
     key: /org/cinnamon/settings-daemon/plugins/xsettings/buttons-have-icons
     value: 'true'
     state: present
 
+# Cinnamon Theme Configuration
 - name: Set theme name
   community.general.dconf:
     key: /org/cinnamon/theme/name
     value: "'Mint-Y-Dark'"
     state: present
 
+# GNOME Desktop Interface Configuration
 - name: Set GNOME clock format to 24h
   community.general.dconf:
     key: /org/gnome/desktop/interface/clock-format
@@ -256,12 +270,7 @@
     value: "'Mint-L-Dark'"
     state: present
 
-- name: Set color scheme to prefer dark
-  community.general.dconf:
-    key: /org/x/apps/portal/color-scheme
-    value: "'prefer-dark'"
-    state: present
-
+# GNOME Terminal Configuration
 - name: Set GNOME Terminal Default Profile Background Color
   community.general.dconf:
     key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color
@@ -304,7 +313,7 @@
     value: 'false'
     state: present
 
-- name: Set GNOME Terminal Default Profile Transparency
+- name: Set GNOME Terminal Default Profile Use Theme Transparency
   community.general.dconf:
     key: /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-transparency
     value: 'false'

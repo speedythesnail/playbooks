@@ -43,21 +43,24 @@
   become: true
   when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
 
-# TODO: Create this 822 repo ONLY when there is no .list version of the repo, then create the repo using the builtin yum, then delete the 822 repo.....
-- name: Add 1Password Repository (Debian-Systems)
-  ansible.builtin.deb822_repository:
-    name: 1password
-    types: deb
-    uris: 'https://downloads.1password.com/linux/debian/amd64'
-    signed_by: 'https://downloads.1password.com/linux/keys/1password.asc'
-    suites: stable
-    components:
-      - main
-    architectures: amd64
-    state: present
-    enabled: true
+- name: Add 1Password Signing Key (Debian-Systems)
+  ansible.builtin.get_url:
+    url: 'https://downloads.1password.com/linux/keys/1password.asc'
+    dest: /etc/apt/keyrings/1password.asc
+    checksum: sha256:145d6a930ec0326bbcff0db68111ccafe2a07222b4fd32ff6c717b9fba34708b
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
   become: true
-  when: ansible_os_family == "Debian"
+  register: onepassword_signing_key
+
+- name: Add 1Password Repository (Debian-Systems)
+  ansible.builtin.apt_repository:
+    repo: 'deb [arch=amd64 signed-by={{ onepassword_signing_key.dest }}] https://downloads.1password.com/linux/debian/amd64 stable main'
+    state: present
+    filename: 1password
+    update-cache: true
+  become: true
 
 - name: Install packages
   ansible.builtin.package:

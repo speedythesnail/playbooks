@@ -31,6 +31,7 @@
       - git
       - jq
       - shellcheck
+      - shfmt
       - vim
     state: present
   become: true
