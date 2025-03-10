@@ -130,7 +130,7 @@
     group: 'root'
     mode: '0644'
   become: true
-  notify: update trusted ca cert (RedHat)
+  notify: Update trusted ca cert (RedHat)
   when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
 
 - name: Install ShellTech.net CA cert (Debian Systems)
@@ -141,7 +141,7 @@
     group: 'root'
     mode: '0644'
   become: true
-  notify: update trusted ca cert (Debian)
+  notify: Update trusted ca cert (Debian)
   when: ansible_os_family == "Debian"
 
 - name: Check if .ssh directory exists
