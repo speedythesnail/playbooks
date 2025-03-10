@@ -27,7 +27,6 @@
   ansible.builtin.package:
     name:
       - ansible-lint
-      - code
       - git
       - jq
       - shellcheck
@@ -35,6 +34,20 @@
       - vim
     state: present
   become: true
+
+- name: Install Visual Studio Code (RedHat-Systems)
+  ansible.builtin.package:
+    name: code
+    state: present
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: Install Visual Studio Code (Debian-Systems)
+  ansible.builtin.package:
+    name: visual-studio-code
+    state: present
+  become: true
+  when: ansible_os_family == "Debian"
 
 - name: Install Development packages (Debian-Systems)
   ansible.builtin.package:
