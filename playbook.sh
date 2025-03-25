@@ -75,6 +75,11 @@ else
 	fi
 fi
 
+# echo "Updating ansible collection"
+# for module in $(ansible-galaxy collection list | grep -E '[a-z._0-9]+ +[0-9]' | awk '{print $1}'); do
+# 	ansible-galaxy collection install -U "${module}"
+# done
+
 # Run Ansible playbook
 echo "Running Ansible playbook..."
 ansible-playbook -i inventory/hosts.yaml roles/site.yaml --ask-become-pass

@@ -1,17 +1,10 @@
 ---
 - name: Configure home workstation
   hosts: localhost
-  vars_prompt:
-    - name: git_username
-      prompt: 'Enter your Git username'
-      private: false
-
-    - name: git_email
-      prompt: 'Enter your Git email'
-      private: false
 
   roles:
     - common
+    - 1password
     - { role: thinkpad, when: "'ThinkPad' in ansible_product_version" }
     - development-core
     - development-java

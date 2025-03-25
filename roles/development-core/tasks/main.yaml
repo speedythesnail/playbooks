@@ -46,6 +46,7 @@
   ansible.builtin.package:
     name: visual-studio-code
     state: present
+    update_cache: true
   become: true
   when: ansible_os_family == "Debian"
 
@@ -59,13 +60,11 @@
 - name: Set Git global username
   community.general.git_config:
     name: user.name
-    value: '{{ git_username }}'
+    value: "{{ lookup('community.general.onepassword', onepassword_ssh_key_name, field='git_username') }}"
     scope: global
-  when: git_username is defined and git_username | length > 0
 
 - name: Set Git global email
   community.general.git_config:
     name: user.email
-    value: '{{ git_email }}'
+    value: "{{ lookup('community.general.onepassword', onepassword_ssh_key_name, field='email') }}"
     scope: global
-  when: git_email is defined and git_email | length > 0
