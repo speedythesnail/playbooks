@@ -3,13 +3,14 @@
   hosts: localhost
 
   roles:
-    - common
-    - 1password
-    - { role: thinkpad, when: "'ThinkPad' in ansible_product_version" }
-    - development-core
-    - development-java
-    # - development-python
-    - development-kubernetes
-    - development-typescript
-    - { role: desktop-i3, when: "'RedHat' in ansible_os_family" }
-    - { role: dconf-linux-mint, when: "'Linux Mint' in ansible_distribution" }
+    # - common
+    # - 1password
+    # - { role: thinkpad, when: "'ThinkPad' in ansible_product_version" }
+    # - development-core
+    # - development-java
+    # # - development-python
+    # - development-kubernetes
+    # - development-typescript
+    # - { role: desktop-i3, when: "'RedHat' in ansible_os_family" }
+    # - { role: dconf-linux-mint, when: "'Linux Mint' in ansible_distribution" }
+    - docker

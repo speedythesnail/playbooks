@@ -1,0 +1,71 @@
+- name: Set codename based on /etc/os-release or ansible_distribution
+  ansible.builtin.set_fact:
+    os_codename: "{{ (lookup('file', '/etc/os-release') | regex_search('^UBUNTU_CODENAME=(.*)$', '\\1', multiline=true) | first) or ansible_distribution }}"
+
+- name: Ensure unofficial Docker packages are uninstalled
+  ansible.builtin.package:
+    name:
+      - docker.io
+      - docker-compose
+      - docker-compose-v2
+      - docker-doc
+      - podman-docker
+    state: absent
+  become: true
+
+- name: Add Docker Signing Key (Debian-Systems)
+  ansible.builtin.get_url:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    dest: /etc/apt/keyrings/docker.asc
+    checksum: sha256:1500c1f56fa9e26b9b8f42452a553675796ade0807cdce11975eb98170b3a570
+    owner: "root"
+    group: "root"
+    mode: "0644"
+  become: true
+  register: docker_signing_key
+
+- name: Add Docker Repository (Debian-Systems)
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by={{ docker_signing_key.dest }}] https://download.docker.com/linux/ubuntu {{ os_codename }} stable"
+    state: present
+    filename: docker
+    update-cache: true
+  become: true
+
+- name: Install Docker
+  ansible.builtin.package:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+  become: true
+
+- name: Ensure docker group exists
+  ansible.builtin.group:
+    name: docker
+    state: present
+  become: true
+
+- name: Add user to group
+  ansible.builtin.user:
+    name: "{{ ansible_env.USER }}"
+    groups: docker
+    append: true
+  become: true
+
+- name: Ensure Docker service enabled
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  become: true
+
+- name: Ensure containerd service enabled
+  ansible.builtin.service:
+    name: containerd
+    state: started
+    enabled: true
+  become: true
