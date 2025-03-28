@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 # .bash_profile
 
+if [ -f /opt/homebrew/bin/brew ]; then
+	eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # Function to add a directory to PATH if it's not already included
 pathmunge() {
-	if ! echo "$PATH" | /bin/grep -qE "(^|:)$1($|:)"; then
+	if ! echo "$PATH" | grep -qE "(^|:)$1($|:)"; then
 		if [ "$2" = "after" ]; then
 			PATH="$PATH:$1"
 		else
@@ -24,4 +28,7 @@ if [ -d "/etc/alternatives/java_sdk" ]; then
 	export JAVA_HOME="/etc/alternatives/java_sdk"
 fi
 
-export GTK_THEME=Adwaita-dark
+# Set GTK theme on linux systems
+if [ -f /etc/os-release ]; then
+	export GTK_THEME=Adwaita-dark
+fi

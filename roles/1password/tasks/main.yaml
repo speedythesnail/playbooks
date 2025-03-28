@@ -8,7 +8,7 @@
     path: ~/.ssh
     mode: '0700'
     owner: "{{ ansible_env.USER }}"
-    group: "{{ ansible_env.USER }}"
+    group: "{{ user_group }}"
     state: directory
 
 - name: Ensure ~/.ssh/id_ed25519 key exists and is same as 1password
@@ -16,7 +16,7 @@
     dest: ~/.ssh/id_ed25519
     mode: '0600'
     owner: "{{ ansible_env.USER }}"
-    group: "{{ ansible_env.USER }}"
+    group: "{{ user_group }}"
     content: "{{ ssh_key }}"
 
 - name: Ensure ~/.ssh/id_ed25519.pub key exists and is same as 1password
@@ -24,5 +24,5 @@
     dest: ~/.ssh/id_ed25519.pub
     mode: '0644'
     owner: "{{ ansible_env.USER }}"
-    group: "{{ ansible_env.USER }}"
+    group: "{{ user_group }}"
     content: "{{ ssh_public_key }}"

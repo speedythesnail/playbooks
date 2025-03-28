@@ -1,3 +1,7 @@
 #!/usr/bin/env bash
 
 alias projects='cd ${HOME}/projects'
+
+if pyenv_root=$(pyenv root); then
+	alias brew='env PATH="${PATH//${pyenv_root}\/shims:/}" brew'
+fi

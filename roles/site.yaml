@@ -1,16 +1,31 @@
 ---
+- name: Check if Linux
+  hosts: localhost
+  tasks:
+    - name: If Debian or RedHat, set is_linux
+      ansible.builtin.set_fact:
+        is_linux: true
+        user_grop: '{{ ansible_env.USER }}'
+      when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
+
+    - name: Set user group to staff if on Mac OS
+      ansible.builtin.set_fact:
+        user_group: staff
+      when: "'MacOSX' in ansible_distribution"
+
 - name: Configure home workstation
   hosts: localhost
 
   roles:
-    # - common
-    # - 1password
-    # - { role: thinkpad, when: "'ThinkPad' in ansible_product_version" }
-    # - development-core
-    # - development-java
-    # # - development-python
-    # - development-kubernetes
-    # - development-typescript
-    # - { role: desktop-i3, when: "'RedHat' in ansible_os_family" }
-    # - { role: dconf-linux-mint, when: "'Linux Mint' in ansible_distribution" }
-    - docker
+    - { role: mac, when: "'MacOSX' in ansible_distribution" }
+    - common
+    - 1password
+    - { role: thinkpad, when: ansible_product_version is defined and "'ThinkPad' in ansible_product_version" }
+    - development-core
+    - development-java
+    # - development-python
+    - development-kubernetes
+    - development-typescript
+    - { role: desktop-i3, when: "'RedHat' in ansible_os_family" }
+    - { role: dconf-linux-mint, when: "'Linux Mint' in ansible_distribution" }
+    - { role: docker, when: is_linux is defined }

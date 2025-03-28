@@ -36,6 +36,7 @@
     mode: '0644'
   become: true
   register: kubernetes_signing_key
+  when: ansible_os_family == "Debian"
 
 - name: Add Kubernetes Repository (Debian-Systems)
   ansible.builtin.apt_repository:
@@ -44,6 +45,7 @@
     filename: kubernetes
     update-cache: true
   become: true
+  when: ansible_os_family == "Debian"
 
 - name: Install packages
   ansible.builtin.package:
@@ -51,24 +53,26 @@
       - kubectl
     state: present
   become: true
+  when: is_linux is defined
 
 - name: Check if Helm is installed
   ansible.builtin.stat:
     path: '{{ ansible_env.HOME }}/.local/bin/helm'
     checksum_algorithm: sha256
   register: helm_stat
+  when: is_linux is defined
 
 - name: Get Helm checksum
   ansible.builtin.set_fact:
     helm_checksum: '{{ helm_stat.stat.checksum }}'
-  when: helm_stat.stat.exists
+  when: is_linux is defined and helm_stat.stat.exists
 
 - name: Download Helm
   ansible.builtin.get_url:
     url: 'https://get.helm.sh/helm-{{ helm_version }}-linux-amd64.tar.gz'
     dest: /tmp/helm.tar.gz
     mode: '0660'
-  when: helm_checksum is undefined or helm_checksum != helm_sha256
+  when: is_linux is defined and (helm_checksum is undefined or helm_checksum != helm_sha256)
   register: helm_downloaded
 
 - name: Extract Helm
@@ -76,7 +80,7 @@
     src: /tmp/helm.tar.gz
     dest: /tmp/
     remote_src: true
-  when: helm_downloaded is defined
+  when: is_linux is defined and helm_downloaded is defined
   register: helm_extracted
 
 - name: Move Helm binary
@@ -85,5 +89,5 @@
     dest: '{{ ansible_env.HOME }}/.local/bin/helm'
     mode: '0755'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
-  when: helm_extracted is defined
+    group: '{{ user_group }}'
+  when: is_linux is defined and helm_extracted is defined

@@ -34,6 +34,7 @@
       - vim
     state: present
   become: true
+  when: is_linux is defined
 
 - name: Install Visual Studio Code (RedHat-Systems)
   ansible.builtin.package:
@@ -56,6 +57,7 @@
       - build-essential
     state: present
   become: true
+  when: ansible_os_family == "Debian"
 
 - name: Set Git global username
   community.general.git_config:

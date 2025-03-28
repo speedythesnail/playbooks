@@ -53,6 +53,7 @@
     mode: '0644'
   become: true
   register: onepassword_signing_key
+  when: ansible_os_family == "Debian"
 
 - name: Add 1Password Repository (Debian-Systems)
   ansible.builtin.apt_repository:
@@ -61,6 +62,7 @@
     filename: 1password
     update-cache: true
   become: true
+  when: ansible_os_family == "Debian"
 
 - name: Install packages
   ansible.builtin.package:
@@ -74,6 +76,7 @@
       - vim
     state: present
   become: true
+  when: is_linux is defined
 
 - name: Install Debian packages
   ansible.builtin.package:
@@ -102,7 +105,7 @@
     state: directory
     mode: '0755'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
   become: false
   with_items:
     - '{{ ansible_env.HOME }}'
@@ -115,7 +118,7 @@
     src: 'files/{{ item.name }}'
     dest: '{{ ansible_env.HOME }}/{{ item.dest }}'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
     mode: '{{ item.mode }}'
   with_items:
     - { name: 'vimrc', dest: '.vimrc', mode: '0700' }
@@ -155,7 +158,7 @@
     path: '{{ ansible_env.HOME }}/.ssh'
     mode: '0700'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
   when: ssh_dir.stat.exists
 
 - name: Check if private key exists
@@ -168,7 +171,7 @@
     path: '{{ ansible_env.HOME }}/.ssh/id_ed25519'
     mode: '0600'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
   when: private_key.stat.exists
 
 - name: Check if public key exists
@@ -181,5 +184,5 @@
     path: '{{ ansible_env.HOME }}/.ssh/id_ed25519.pub'
     mode: '0644'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
   when: public_key.stat.exists

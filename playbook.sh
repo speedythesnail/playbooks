@@ -71,7 +71,7 @@ else
 		fi
 	else
 		echo "Unsupported package manager. This script only supports dnf and apt."
-		exit 1
+		echo "Will try to run Ansible anyway..."
 	fi
 fi
 

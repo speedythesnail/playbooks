@@ -18,7 +18,7 @@
     path: '{{ ansible_env.HOME }}/.config/i3'
     state: directory
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
     mode: '0755'
 
 - name: Ensure i3status config dir exist
@@ -26,7 +26,7 @@
     path: '{{ ansible_env.HOME }}/.config/i3status'
     state: directory
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
     mode: '0755'
 
 - name: Copy i3 config
@@ -34,7 +34,7 @@
     src: 'files/i3.config'
     dest: '{{ ansible_env.HOME }}/.config/i3/config'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
     mode: '0644'
 
 - name: Generate i3status config and store to ~/.config/i3status/config
@@ -42,5 +42,5 @@
     src: 'templates/i3status.config.j2'
     dest: '{{ ansible_env.HOME }}/.config/i3status/config'
     owner: '{{ ansible_env.USER }}'
-    group: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
     mode: '0644'
