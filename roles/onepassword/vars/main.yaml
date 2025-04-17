@@ -1,0 +1,14 @@
+debsig_keyrings_path: /usr/share/debsig/keyrings/AC2D62742012EA22
+debsig_policies_path: /etc/debsig/policies/AC2D62742012EA22
+keyrings_path: /usr/share/keyrings
+onepassword_gpg_debsig_path: "{{ debsig_keyrings_path }}/debsig.gpg"
+onepassword_gpg_debsig_policy_path: "{{ debsig_policies_path }}/1password.pol"
+onepassword_gpg_path: "{{ keyrings_path }}/1password-archive-keyring.gpg"
+
+onepassword_deb_url: https://downloads.1password.com/linux/debian/amd64
+onepassword_asc_file_url: https://downloads.1password.com/linux/keys/1password.asc
+onepasword_policy_file_url: https://downloads.1password.com/linux/debian/debsig/1password.pol
+
+onepassword_asc_file_sha256sum: 145d6a930ec0326bbcff0db68111ccafe2a07222b4fd32ff6c717b9fba34708b
+onepassword_gpg_file_sha256sum: 398410ee17f90629593bccdf7dbc52c25fb7f363e4fd6c5b7f6dec8b816d71a3
+onepasword_policy_file_sha256sum: c0c148807d8dc588750a9cc512c7243ed10a9cfd5519a5a6f0a038ad66a19c39

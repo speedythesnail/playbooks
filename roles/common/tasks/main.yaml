@@ -31,44 +31,9 @@
   become: true
   when: ansible_distribution == "RedHat" and ansible_distribution_major_version == "9"
 
-- name: Add 1Password repository (RedHat Systems)
-  ansible.builtin.yum_repository:
-    name: 1password
-    description: '1Password Stable Channel'
-    baseurl: https://downloads.1password.com/linux/rpm/stable/$basearch
-    enabled: true
-    gpgcheck: true
-    gpgkey: https://downloads.1password.com/linux/keys/1password.asc
-    file: 1password
-  become: true
-  when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
-
-- name: Add 1Password Signing Key (Debian-Systems)
-  ansible.builtin.get_url:
-    url: 'https://downloads.1password.com/linux/keys/1password.asc'
-    dest: /etc/apt/keyrings/1password.asc
-    checksum: sha256:145d6a930ec0326bbcff0db68111ccafe2a07222b4fd32ff6c717b9fba34708b
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
-  become: true
-  register: onepassword_signing_key
-  when: ansible_os_family == "Debian"
-
-- name: Add 1Password Repository (Debian-Systems)
-  ansible.builtin.apt_repository:
-    repo: 'deb [arch=amd64 signed-by={{ onepassword_signing_key.dest }}] https://downloads.1password.com/linux/debian/amd64 stable main'
-    state: present
-    filename: 1password
-    update-cache: true
-  become: true
-  when: ansible_os_family == "Debian"
-
 - name: Install packages
   ansible.builtin.package:
     name:
-      - 1password
-      - 1password-cli
       - firefox
       - kitty
       - thunderbird
@@ -101,88 +66,88 @@
 
 - name: Ensure directories in home exists
   ansible.builtin.file:
-    path: '{{ item }}'
+    path: "{{ item }}"
     state: directory
-    mode: '0755'
-    owner: '{{ ansible_env.USER }}'
+    mode: "0755"
+    owner: "{{ ansible_env.USER }}"
     group: "{{ user_group }}"
   become: false
   with_items:
-    - '{{ ansible_env.HOME }}'
-    - '{{ ansible_env.HOME }}/.config'
-    - '{{ ansible_env.HOME }}/.local'
-    - '{{ ansible_env.HOME }}/.local/bin'
+    - "{{ ansible_env.HOME }}"
+    - "{{ ansible_env.HOME }}/.config"
+    - "{{ ansible_env.HOME }}/.local"
+    - "{{ ansible_env.HOME }}/.local/bin"
 
 - name: Copy files to home dir
   ansible.builtin.copy:
-    src: 'files/{{ item.name }}'
-    dest: '{{ ansible_env.HOME }}/{{ item.dest }}'
-    owner: '{{ ansible_env.USER }}'
+    src: "files/{{ item.name }}"
+    dest: "{{ ansible_env.HOME }}/{{ item.dest }}"
+    owner: "{{ ansible_env.USER }}"
     group: "{{ user_group }}"
-    mode: '{{ item.mode }}'
+    mode: "{{ item.mode }}"
   with_items:
-    - { name: 'vimrc', dest: '.vimrc', mode: '0700' }
-    - { name: 'bash_aliases', dest: '.bash_aliases', mode: '0600' }
-    - { name: 'bash_profile', dest: '.bash_profile', mode: '0600' }
-    - { name: 'bashrc', dest: '.bashrc', mode: '0600' }
+    - { name: "vimrc", dest: ".vimrc", mode: "0700" }
+    - { name: "bash_aliases", dest: ".bash_aliases", mode: "0600" }
+    - { name: "bash_profile", dest: ".bash_profile", mode: "0600" }
+    - { name: "bashrc", dest: ".bashrc", mode: "0600" }
 
 - name: Install ShellTech.net CA cert (RedHat Systems)
   ansible.builtin.copy:
-    src: 'files/shelltech-ca.crt'
+    src: "files/shelltech-ca.crt"
     dest: /etc/pki/ca-trust/source/anchors/shelltech-ca.crt
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    owner: "root"
+    group: "root"
+    mode: "0644"
   become: true
   notify: Update trusted ca cert (RedHat)
   when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
 
 - name: Install ShellTech.net CA cert (Debian Systems)
   ansible.builtin.copy:
-    src: 'files/shelltech-ca.crt'
+    src: "files/shelltech-ca.crt"
     dest: /usr/local/share/ca-certificates/shelltech-ca.crt
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    owner: "root"
+    group: "root"
+    mode: "0644"
   become: true
   notify: Update trusted ca cert (Debian)
   when: ansible_os_family == "Debian"
 
 - name: Check if .ssh directory exists
   ansible.builtin.stat:
-    path: '{{ ansible_env.HOME }}/.ssh'
+    path: "{{ ansible_env.HOME }}/.ssh"
   register: ssh_dir
 
 - name: Set permissions for .ssh directory
   ansible.builtin.file:
-    path: '{{ ansible_env.HOME }}/.ssh'
-    mode: '0700'
-    owner: '{{ ansible_env.USER }}'
+    path: "{{ ansible_env.HOME }}/.ssh"
+    mode: "0700"
+    owner: "{{ ansible_env.USER }}"
     group: "{{ user_group }}"
   when: ssh_dir.stat.exists
 
 - name: Check if private key exists
   ansible.builtin.stat:
-    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519'
+    path: "{{ ansible_env.HOME }}/.ssh/id_ed25519"
   register: private_key
 
 - name: Set permissions for private key
   ansible.builtin.file:
-    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519'
-    mode: '0600'
-    owner: '{{ ansible_env.USER }}'
+    path: "{{ ansible_env.HOME }}/.ssh/id_ed25519"
+    mode: "0600"
+    owner: "{{ ansible_env.USER }}"
     group: "{{ user_group }}"
   when: private_key.stat.exists
 
 - name: Check if public key exists
   ansible.builtin.stat:
-    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519.pub'
+    path: "{{ ansible_env.HOME }}/.ssh/id_ed25519.pub"
   register: public_key
 
 - name: Set permissions for public key
   ansible.builtin.file:
-    path: '{{ ansible_env.HOME }}/.ssh/id_ed25519.pub'
-    mode: '0644'
-    owner: '{{ ansible_env.USER }}'
+    path: "{{ ansible_env.HOME }}/.ssh/id_ed25519.pub"
+    mode: "0644"
+    owner: "{{ ansible_env.USER }}"
     group: "{{ user_group }}"
   when: public_key.stat.exists

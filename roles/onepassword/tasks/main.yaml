@@ -1,0 +1,178 @@
+- name: Add 1Password repository (RedHat Systems)
+  ansible.builtin.yum_repository:
+    name: 1password
+    description: "1Password Stable Channel"
+    baseurl: https://downloads.1password.com/linux/rpm/stable/$basearch
+    enabled: true
+    gpgcheck: true
+    gpgkey: "{{ onepassword_asc_file_url }}"
+    file: 1password
+  become: true
+  when: ansible_distribution in ["RedHat", "CentOS", "Fedora"]
+
+- name: Ensure keyring and debsig directories exists (Debian-Systems)
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+  with_items:
+    - "{{ debsig_keyrings_path }}"
+    - "{{ debsig_policies_path }}"
+    - "{{ keyrings_path }}"
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Validate 1Password GPG Key (Debian-Systems)
+  ansible.builtin.stat:
+    path: "{{ onepassword_gpg_path }}"
+    checksum_algorithm: sha256
+  register: onepassword_gpg_file_stats
+  when: ansible_os_family == "Debian"
+
+- name: Validate 1Password Debsig GPG Key(Debian-Systems)
+  ansible.builtin.stat:
+    path: "{{ onepassword_gpg_debsig_path }}"
+    checksum_algorithm: sha256
+  register: onepassword_debsig_gpg_file_stats
+  when: ansible_os_family == "Debian"
+
+- name: Validate 1Password Debsig file (Debian-Systems)
+  ansible.builtin.stat:
+    path: "{{ onepassword_gpg_debsig_policy_path }}"
+    checksum_algorithm: sha256
+  register: onepassword_debsig_policy_path_stats
+  when: ansible_os_family == "Debian"
+
+- name: Set checksum facts for GPG key
+  ansible.builtin.set_fact:
+    gpg_key_checksum: "{{ onepassword_gpg_file_stats.stat.checksum | default('') }}"
+    debsig_gpg_checksum: "{{ onepassword_debsig_gpg_file_stats.stat.checksum | default('') }}"
+    debsig_gpg_policy_checksum: "{{ onepassword_debsig_policy_path_stats.stat.checksum | default('') }}"
+  when: ansible_os_family == "Debian"
+
+- name: Determine if need to download 1password GPG file
+  ansible.builtin.set_fact:
+    download_gpg_file: "{{ gpg_key_checksum != onepassword_gpg_file_sha256sum or debsig_gpg_checksum != onepassword_gpg_file_sha256sum }}"
+  when: ansible_os_family == "Debian"
+
+- name: Determine if need to download 1password GPG Debsig policy file
+  ansible.builtin.set_fact:
+    download_gpg_debsig_policy_file: "{{ debsig_gpg_policy_checksum != onepasword_policy_file_sha256sum }}"
+  when: ansible_os_family == "Debian"
+
+- name: Create temp file for asc key (Debian-Systems)
+  ansible.builtin.tempfile:
+    state: file
+  register: asc_temp_file
+  when: ansible_os_family == "Debian" and download_gpg_file
+  become: true
+
+- name: Create temp file for gpg key (Debian-Systems)
+  ansible.builtin.tempfile:
+    state: file
+  register: gpg_temp_file
+  when: ansible_os_family == "Debian" and download_gpg_file
+  become: true
+
+- name: Add 1Password Signing Key (Debian-Systems)
+  ansible.builtin.get_url:
+    url: "https://downloads.1password.com/linux/keys/1password.asc"
+    dest: "{{ asc_temp_file.path }}"
+    checksum: "sha256:{{ onepassword_asc_file_sha256sum }}"
+    mode: "0644"
+    owner: root
+    group: root
+  register: onepassword_signing_key
+  when: ansible_os_family == "Debian" and download_gpg_file
+  become: true
+
+- name: De-armour gpg key
+  ansible.builtin.command:
+    cmd: "gpg --dearmor --yes --output '{{ gpg_temp_file.path }}' '{{ asc_temp_file.path }}'"
+  become: true
+  register: gpg_key_output
+  when: ansible_os_family == "Debian" and download_gpg_file
+  changed_when: gpg_key_output.rc != 0
+
+- name: Ensure proper file permissions for dearmoured key
+  ansible.builtin.file:
+    state: file
+    path: "{{ gpg_temp_file.path }}"
+    mode: "0644"
+    owner: root
+    group: root
+  when: ansible_os_family == "Debian" and download_gpg_file and gpg_key_output is defined and not gpg_key_output.failed
+  become: true
+
+- name: Copy gpg key to keyring and debsig folder
+  ansible.builtin.copy:
+    src: "{{ gpg_temp_file.path }}"
+    dest: "{{ item }}"
+    mode: "0644"
+    owner: root
+    group: root
+  with_items:
+    - "{{ onepassword_gpg_path }}"
+    - "{{ onepassword_gpg_debsig_path }}"
+  become: true
+  when: ansible_os_family == "Debian" and download_gpg_file and gpg_key_output is defined and not gpg_key_output.failed
+
+- name: Download 1Password Deb Policy (Debian-Systems)
+  ansible.builtin.get_url:
+    url: "{{ onepasword_policy_file_url }}"
+    dest: "{{ onepassword_gpg_debsig_policy_path }}"
+    checksum: "sha256:{{ onepasword_policy_file_sha256sum }}"
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  when: ansible_os_family == "Debian" and download_gpg_debsig_policy_file
+
+- name: Add 1Password Repository (Debian-Systems)
+  ansible.builtin.template:
+    src: templates/1password.list.j2
+    dest: /etc/apt/sources.list.d/1password.list
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: Install 1Password
+  ansible.builtin.package:
+    name:
+      - 1password
+      - 1password-cli
+    state: present
+  become: true
+
+- name: Retrieve git credentials
+  ansible.builtin.set_fact:
+    ssh_key: "{{ lookup('community.general.onepassword_ssh_key', onepassword_ssh_key_name, ssh_format=true) }}"
+    ssh_public_key: "{{ lookup('community.general.onepassword', onepassword_ssh_key_name, field='public_key') }}"
+
+- name: Validate ~/.ssh folder exists with proper permisions
+  ansible.builtin.file:
+    path: ~/.ssh
+    mode: "0700"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ user_group }}"
+    state: directory
+
+- name: Ensure ~/.ssh/id_ed25519 key exists and is same as 1password
+  ansible.builtin.copy:
+    dest: ~/.ssh/id_ed25519
+    mode: "0600"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ user_group }}"
+    content: "{{ ssh_key }}"
+
+- name: Ensure ~/.ssh/id_ed25519.pub key exists and is same as 1password
+  ansible.builtin.copy:
+    dest: ~/.ssh/id_ed25519.pub
+    mode: "0644"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ user_group }}"
+    content: "{{ ssh_public_key }}"

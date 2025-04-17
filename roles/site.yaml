@@ -19,7 +19,7 @@
   roles:
     - { role: mac, when: "'MacOSX' in ansible_distribution" }
     - common
-    - 1password
+    - onepassword
     - { role: thinkpad, when: ansible_product_version is defined and "'ThinkPad' in ansible_product_version" }
     - development-core
     - development-java
