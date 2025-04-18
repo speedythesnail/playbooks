@@ -32,3 +32,5 @@ fi
 if [ -f /etc/os-release ]; then
 	export GTK_THEME=Adwaita-dark
 fi
+
+export GPG_TTY=$(tty)
