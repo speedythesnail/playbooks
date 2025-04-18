@@ -5,3 +5,6 @@ alias projects='cd ${HOME}/projects'
 if pyenv_root=$(pyenv root 2>/dev/null); then
     alias brew='env PATH="${PATH//${pyenv_root}\/shims:/}" brew'
 fi
+if [[ $OSTYPE == 'darwin'* ]]; then 
+	alias clear-dns='sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder'
+fi
