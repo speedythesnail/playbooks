@@ -9,6 +9,6 @@ onepassword_deb_url: https://downloads.1password.com/linux/debian/amd64
 onepassword_asc_file_url: https://downloads.1password.com/linux/keys/1password.asc
 onepasword_policy_file_url: https://downloads.1password.com/linux/debian/debsig/1password.pol
 
-onepassword_asc_file_sha256sum: 145d6a930ec0326bbcff0db68111ccafe2a07222b4fd32ff6c717b9fba34708b
+onepassword_asc_file_sha256sum: f39e7dd9dedc581ced85732832f217e0de5860a3b80279b5af4bc7c6d8157bae
 onepassword_gpg_file_sha256sum: 398410ee17f90629593bccdf7dbc52c25fb7f363e4fd6c5b7f6dec8b816d71a3
 onepasword_policy_file_sha256sum: c0c148807d8dc588750a9cc512c7243ed10a9cfd5519a5a6f0a038ad66a19c39

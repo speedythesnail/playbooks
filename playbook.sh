@@ -76,7 +76,7 @@ else
 fi
 
 # echo "Updating ansible collection"
-# for module in $(ansible-galaxy collection list | grep -E '[a-z._0-9]+ +[0-9]' | # awk '{print $1}'); do
+# for module in $(ansible-galaxy collection list | grep -E '[a-z._0-9]+ +[0-9]' | awk '{print $1}'); do
 #	ansible-galaxy collection install -U "${module}"
 # done
 

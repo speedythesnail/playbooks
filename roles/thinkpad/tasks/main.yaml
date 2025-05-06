@@ -3,5 +3,7 @@
     name:
       - tlp
       - tlp-rdw
+      - fprintd
+      - libpam-fprintd
     state: present
   become: true
