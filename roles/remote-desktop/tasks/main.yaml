@@ -6,11 +6,13 @@
   become: true
 
 - name: Open firewall for RDP
-  ansible.posix.firewalld:
+  ansible.builtin.firewalld:
     port: 3389/tcp
     permanent: true
+    state: enabled
+    immediate: true
   become: true
-  notify: Restart Firewalld
+  notify: Restart firewalld
 
 - name: Copy pam config for gnome-keyring
   ansible.builtin.copy:

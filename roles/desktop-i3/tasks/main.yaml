@@ -44,3 +44,12 @@
     owner: '{{ ansible_env.USER }}'
     group: "{{ user_group }}"
     mode: '0644'
+
+
+- name: Copy ~/.xsession
+  ansible.builtin.copy:
+    src: 'files/.xsession'
+    dest: '{{ ansible_env.HOME }}/.xsession'
+    owner: '{{ ansible_env.USER }}'
+    group: "{{ user_group }}"
+    mode: '0755'
