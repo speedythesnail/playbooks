@@ -55,6 +55,7 @@
   ansible.builtin.package:
     name:
       - fira-code-fonts
+      - fontawesome-fonts
     state: present
   become: true
   when: ansible_os_family == "RedHat"

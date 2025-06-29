@@ -31,8 +31,8 @@
 
 - name: Copy i3 config
   ansible.builtin.copy:
-    src: 'files/i3.config'
-    dest: '{{ ansible_env.HOME }}/.config/i3/config'
+    src: 'files/i3'
+    dest: '{{ ansible_env.HOME }}/.config'
     owner: '{{ ansible_env.USER }}'
     group: "{{ user_group }}"
     mode: '0644'

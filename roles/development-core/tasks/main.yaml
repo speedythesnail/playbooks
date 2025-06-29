@@ -30,7 +30,6 @@
       - git
       - jq
       - shellcheck
-      - shfmt
       - vim
     state: present
   become: true
@@ -55,6 +54,7 @@
   ansible.builtin.package:
     name:
       - build-essential
+      - shfmt
     state: present
   become: true
   when: ansible_os_family == "Debian"

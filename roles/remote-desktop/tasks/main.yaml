@@ -1,0 +1,22 @@
+- name: Installing remote desktop packages
+  ansible.builtin.package:
+    name:
+      - tigervnc-server
+      - xrdp
+  become: true
+
+- name: Open firewall for RDP
+  ansible.posix.firewalld:
+    port: 3389/tcp
+    permanent: true
+  become: true
+  notify: Restart Firewalld
+
+- name: Copy pam config for gnome-keyring
+  ansible.builtin.copy:
+    src: files/etc/pam.d/login
+    dest: /etc/pam.d/login
+    mode: '0644'
+    owner: "root"
+    group: root
+  become: true

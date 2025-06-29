@@ -13,19 +13,33 @@
         user_group: staff
       when: "'MacOSX' in ansible_distribution"
 
+    - name: Debug ansible product version
+      ansible.builtin.debug:
+        var: ansible_product_version
+
 - name: Configure home workstation
   hosts: localhost
 
   roles:
-    - { role: mac, when: "'MacOSX' in ansible_distribution" }
+    - role: mac
+      when: "'MacOSX' in ansible_distribution"
     - common
     - onepassword
-    - { role: thinkpad, when: ansible_product_version is defined and "'ThinkPad' in ansible_product_version" }
+    - role: thinkpad
+      when: 
+        - ansible_product_version is defined 
+        - "'ThinkPad' in ansible_product_version"
     - development-core
     - development-java
     # - development-python
     - development-kubernetes
     - development-typescript
-    - { role: desktop-i3, when: "'RedHat' in ansible_os_family" }
-    - { role: dconf-linux-mint, when: "'Linux Mint' in ansible_distribution" }
-    - { role: docker, when: is_linux is defined }
+    - role: desktop-i3
+      when: "'RedHat' in ansible_os_family"
+    - role: dconf-linux-mint
+      when: 
+        - "'Linux Mint' in ansible_distribution"
+    - role: docker
+      when: 
+        - is_linux is defined
+        - ansible_os_family == "Debian"
