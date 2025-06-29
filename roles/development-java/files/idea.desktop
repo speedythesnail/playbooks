@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=IntelliJ IDEA
+Exec=/home/speedythesnail/.local/idea-IU-251.26927.53/bin/idea
+Icon=/home/speedythesnail/.local/idea-IU-251.26927.53/bin/idea.png
+Terminal=false
+Categories=Development;IDE;
+StartupNotify=true
+

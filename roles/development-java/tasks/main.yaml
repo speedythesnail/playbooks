@@ -35,3 +35,20 @@
     link: /usr/bin/java
   become: true
   when: ansible_os_family == "Debian"
+
+- name: Ensure ~/.local exists
+  ansible.builtin.file:
+    name: "{{ ansible_env.HOME }}/.local"
+    state: directory
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: "0755"
+
+# TODO: Add download intellij tasks, make this a template
+- name: Ensure IntelliJ IDEA .desktop file exists
+  ansible.builtin.copy:
+    src: files/idea.desktop
+    dest: "{{ ansible_env.HOME }}/.local/share/applications/idea.desktop"
+    owner: "{{ ansible_env.USER }}"
+    group: "{{ ansible_env.USER }}"
+    mode: "0644"
